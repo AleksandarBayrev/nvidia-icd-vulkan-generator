@@ -6,7 +6,7 @@ namespace NvidiaICDVulkanGenerator
     public class JsonModel
     {
         [JsonPropertyName("file_format_version")]
-        public string FileFormatVersion { get; init; } = "";
+        public string FileFormatVersion { get; init; } = "1.0.0";
 
         [JsonPropertyName("ICD")]
         public ICDModel ICD { get; init; } = new ICDModel();
