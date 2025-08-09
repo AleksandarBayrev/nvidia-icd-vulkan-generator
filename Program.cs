@@ -2,7 +2,7 @@
 using NvidiaICDVulkanGenerator;
 
 System.Console.WriteLine(string.Join(",", args));
-
+System.Console.WriteLine(Helpers.ReadVulkanVersion());
 if (args.Length == 0)
 {
     Console.WriteLine("Available args: --read, --create");
