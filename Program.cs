@@ -70,8 +70,6 @@ if (args[0] == Constants.AvailableCommands.CreateOrUpdate)
         return;
     }
 
-    contents.ICD.APIVersion = vulkanVersion;
-
     var newModel = new JsonModel();
     newModel.ICD.APIVersion = vulkanVersion;
 
@@ -80,6 +78,8 @@ if (args[0] == Constants.AvailableCommands.CreateOrUpdate)
         System.Console.WriteLine($"{filePath} is up to date, no changes made to it.");
         return;
     }
+
+    contents.ICD.APIVersion = vulkanVersion;
 
     var sb = new StringBuilder(JsonSerializer.Serialize(contents, Options.JsonSerializerOptions));
     sb.Append(Environment.NewLine);
