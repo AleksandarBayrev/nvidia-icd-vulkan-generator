@@ -1,3 +1,4 @@
+using System.Runtime.InteropServices;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -5,9 +6,11 @@ namespace NvidiaICDVulkanGenerator
 {
     public class JsonModel
     {
+        [JsonPropertyOrder(1)]
         [JsonPropertyName("file_format_version")]
         public string FileFormatVersion { get; init; } = "1.0.0";
 
+        [JsonPropertyOrder(0)]
         [JsonPropertyName("ICD")]
         public ICDModel ICD { get; init; } = new ICDModel();
 
@@ -19,10 +22,20 @@ namespace NvidiaICDVulkanGenerator
 
     public class ICDModel
     {
+        [JsonPropertyOrder(1)]
         [JsonPropertyName("library_path")]
-        public string LibraryPath { get; init; } = "";
+        public string LibraryPath
+        {
+            get
+            {
+                var olderCPUArch = "/usr/lib/i386-linux-gnu/libGLX_nvidia.so.0";
+                var newerCPUArch = "/usr/lib/x86_64-linux-gnu/libGLX_nvidia.so.0";
+                return Environment.Is64BitOperatingSystem ? newerCPUArch : olderCPUArch;
+            }
+        }
 
+        [JsonPropertyOrder(0)]
         [JsonPropertyName("api_version")]
-        public string APIVersion { get; init; } = "";
+        public string APIVersion { get; set; } = "";
     }
 }

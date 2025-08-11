@@ -1,15 +1,28 @@
-﻿using System.Text.Json;
+﻿using System.Text;
+using System.Text.Json;
 using NvidiaICDVulkanGenerator;
 
-System.Console.WriteLine(string.Join(",", args));
-System.Console.WriteLine(Helpers.ReadVulkanVersion());
-if (args.Length == 0)
+if (!OperatingSystem.IsLinux())
 {
-    Console.WriteLine("Available args: --read, --create");
+    System.Console.WriteLine("This program is designed for Linux only!");
     return;
 }
 
-if (args[0] == "--read")
+var vulkanVersion = Helpers.ReadVulkanVersion();
+
+if (vulkanVersion == null)
+{
+    System.Console.WriteLine("Vulkan version for NVIDIA not found (probably no NVIDIA adapter or missing driver?)");
+    return;
+}
+
+if (args.Length != 1 || !Constants.GetAvailableCommands().Contains(args[0]))
+{
+    Console.WriteLine($"Available args: {string.Join(", ", Constants.GetAvailableCommands())}");
+    return;
+}
+
+if (args[0] == Constants.AvailableCommands.Read)
 {
     var filePath = Path.Combine(Constants.BaseJsonPath, Constants.Filename);
 
@@ -27,7 +40,38 @@ if (args[0] == "--read")
     return;
 }
 
-if (args[0] == "--create")
+if (args[0] == Constants.AvailableCommands.CreateOrUpdate)
 {
-    System.Console.WriteLine("Command is WIP");
+    var filePath = Path.Combine(Constants.BaseJsonPath, Constants.Filename);
+
+    var hasFile = File.Exists(filePath);
+    if (!hasFile)
+    {
+        System.Console.WriteLine(Helpers.GetFileNotFoundMessage(filePath));
+        System.Console.WriteLine("Creating it");
+
+        try
+        {
+            using var file = File.CreateText(filePath);
+            file.Write(JsonSerializer.Serialize(new JsonModel()));
+        }
+        catch (UnauthorizedAccessException)
+        {
+            System.Console.WriteLine($"The file could not be created in {filePath} due to lack of administrator priviledges. Run the command as root.");
+            return;
+        }
+    }
+
+    var contents = JsonSerializer.Deserialize<JsonModel>(await File.ReadAllTextAsync(filePath), Options.JsonSerializerOptions);
+    if (contents == null)
+    {
+        System.Console.WriteLine($"Failed to parse {filePath}");
+        return;
+    }
+
+    contents.ICD.APIVersion = vulkanVersion;
+    var sb = new StringBuilder(JsonSerializer.Serialize(contents, Options.JsonSerializerOptions));
+    sb.Append(Environment.NewLine);
+    await File.WriteAllTextAsync(filePath, sb.ToString());
+    System.Console.WriteLine($"Successfully updated {filePath}");
 }

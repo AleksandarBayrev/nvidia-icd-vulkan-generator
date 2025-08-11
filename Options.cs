@@ -8,6 +8,7 @@ namespace NvidiaICDVulkanGenerator
         {
             _jsonSerializerOptions = new JsonSerializerOptions();
             _jsonSerializerOptions.WriteIndented = true;
+            _jsonSerializerOptions.IndentSize = 4;
         }
         private static JsonSerializerOptions _jsonSerializerOptions;
 
