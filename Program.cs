@@ -83,6 +83,14 @@ if (args[0] == Constants.AvailableCommands.CreateOrUpdate)
 
     var sb = new StringBuilder(JsonSerializer.Serialize(contents, Options.JsonSerializerOptions));
     sb.Append(Environment.NewLine);
-    await File.WriteAllTextAsync(filePath, sb.ToString());
-    System.Console.WriteLine($"Successfully updated {filePath}");
+    try
+    {
+        await File.WriteAllTextAsync(filePath, sb.ToString());
+        System.Console.WriteLine($"Successfully updated {filePath}");
+    }
+    catch (UnauthorizedAccessException)
+    {
+        System.Console.WriteLine($"The file {filePath} could not be updated due to lack of administrator priviledges. Run the command as root.");
+        return;
+    }
 }
