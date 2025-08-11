@@ -1,4 +1,3 @@
-using System.Runtime.InteropServices;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -6,13 +5,23 @@ namespace NvidiaICDVulkanGenerator
 {
     public class JsonModel
     {
+        public JsonModel()
+        {
+            this.ICD = new ICDModel();
+        }
+
+        public JsonModel(string apiVersion)
+        {
+            this.ICD = new ICDModel(apiVersion);
+        }
+
         [JsonPropertyOrder(1)]
         [JsonPropertyName("file_format_version")]
         public string FileFormatVersion { get; init; } = "1.0.0";
 
         [JsonPropertyOrder(0)]
         [JsonPropertyName("ICD")]
-        public ICDModel ICD { get; init; } = new ICDModel();
+        public ICDModel ICD { get; init; }
 
         public override string ToString()
         {
@@ -22,6 +31,16 @@ namespace NvidiaICDVulkanGenerator
 
     public class ICDModel
     {
+        public ICDModel()
+        {
+            this.APIVersion = "";
+        }
+
+        public ICDModel(string apiVersion)
+        {
+            this.APIVersion = apiVersion;
+        }
+
         [JsonPropertyOrder(1)]
         [JsonPropertyName("library_path")]
         public string LibraryPath

@@ -63,6 +63,7 @@ if (args[0] == Constants.AvailableCommands.CreateOrUpdate)
     }
 
     var contents = JsonSerializer.Deserialize<JsonModel>(await File.ReadAllTextAsync(filePath), Options.JsonSerializerOptions);
+
     if (contents == null)
     {
         System.Console.WriteLine($"Failed to parse {filePath}");
@@ -70,6 +71,16 @@ if (args[0] == Constants.AvailableCommands.CreateOrUpdate)
     }
 
     contents.ICD.APIVersion = vulkanVersion;
+
+    var newModel = new JsonModel();
+    newModel.ICD.APIVersion = vulkanVersion;
+
+    if (newModel.ToString() == contents.ToString())
+    {
+        System.Console.WriteLine($"{filePath} is up to date, no changes made to it.");
+        return;
+    }
+
     var sb = new StringBuilder(JsonSerializer.Serialize(contents, Options.JsonSerializerOptions));
     sb.Append(Environment.NewLine);
     await File.WriteAllTextAsync(filePath, sb.ToString());
