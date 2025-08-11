@@ -11,17 +11,16 @@ if (args.Length != 1 || !Constants.GetAvailableCommands().Contains(args[0]))
     Console.WriteLine($"Available args: {string.Join(", ", Constants.GetAvailableCommands())}");
     return;
 }
-
-IVulkanVersionProvider vulkanVersionProvider = new VulkanVersionProvider();
-
-var vulkanVersion = vulkanVersionProvider.GetVersion();
-
-if (vulkanVersion == null)
+try
 {
-    System.Console.WriteLine("Vulkan version for NVIDIA not found (probably no NVIDIA adapter or missing driver?)");
+    IVulkanVersionProvider vulkanVersionProvider = new VulkanVersionProvider();
+
+    var worker = Helpers.GetWorker(args[0], vulkanVersionProvider);
+
+    await worker.Work();
+}
+catch (Exception ex)
+{
+    System.Console.WriteLine(ex.Message);
     return;
 }
-
-var worker = Helpers.GetWorker(args[0], vulkanVersionProvider);
-
-await worker.Work();
