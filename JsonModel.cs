@@ -31,7 +31,7 @@ namespace NvidiaICDVulkanGenerator
 
         public string ToJsonString()
         {
-            var sb = new StringBuilder(JsonSerializer.Serialize(this.ToString(), Options.JsonSerializerOptions));
+            var sb = new StringBuilder(JsonSerializer.Serialize(this, Options.JsonSerializerOptions));
             sb.Append(Environment.NewLine);
             return sb.ToString();
         }
