@@ -1,4 +1,3 @@
-
 using System.Text.Json;
 
 namespace NvidiaICDVulkanGenerator
@@ -21,13 +20,17 @@ namespace NvidiaICDVulkanGenerator
             try
             {
                 var json = JsonSerializer.Deserialize<JsonModel>(await File.ReadAllTextAsync(filePath), Options.JsonSerializerOptions);
-                System.Console.WriteLine(json?.ToString() ?? Helpers.GetCouldNotParseMessage(filePath));
+                System.Console.WriteLine(json?.ToString() ?? GetCouldNotParseMessage(filePath));
             }
             catch (Exception)
             {
                 System.Console.WriteLine($"Failed to parse {filePath}, please remove it so the program can recreate it.");
             }
             return;
+        }
+        private static string GetCouldNotParseMessage(string path)
+        {
+            return $"Could not parse {path}";
         }
     }
 }

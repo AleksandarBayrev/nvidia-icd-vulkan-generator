@@ -8,10 +8,6 @@ namespace NvidiaICDVulkanGenerator
         {
             return $"Could not find {path}";
         }
-        public static string GetCouldNotParseMessage(string path)
-        {
-            return $"Could not parse {path}";
-        }
         public static IWorker GetWorker(string param, IVulkanVersionProvider vulkanVersionProvider)
         {
             if (param == Constants.AvailableCommands.Read)
