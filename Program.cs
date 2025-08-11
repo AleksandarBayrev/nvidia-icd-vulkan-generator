@@ -1,5 +1,4 @@
-﻿using System.Text;
-using System.Text.Json;
+﻿using System.Text.Json;
 using NvidiaICDVulkanGenerator;
 
 if (!OperatingSystem.IsLinux())
@@ -81,11 +80,9 @@ if (args[0] == Constants.AvailableCommands.CreateOrUpdate)
 
     contents.ICD.APIVersion = vulkanVersion;
 
-    var sb = new StringBuilder(JsonSerializer.Serialize(contents, Options.JsonSerializerOptions));
-    sb.Append(Environment.NewLine);
     try
     {
-        await File.WriteAllTextAsync(filePath, sb.ToString());
+        await File.WriteAllTextAsync(filePath, contents.ToJsonString());
         System.Console.WriteLine($"Successfully updated {filePath}");
     }
     catch (UnauthorizedAccessException)

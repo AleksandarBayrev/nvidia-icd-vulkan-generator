@@ -1,3 +1,4 @@
+using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -26,6 +27,13 @@ namespace NvidiaICDVulkanGenerator
         public override string ToString()
         {
             return JsonSerializer.Serialize(this, Options.JsonSerializerOptions);
+        }
+
+        public string ToJsonString()
+        {
+            var sb = new StringBuilder(JsonSerializer.Serialize(this.ToString(), Options.JsonSerializerOptions));
+            sb.Append(Environment.NewLine);
+            return sb.ToString();
         }
     }
 
