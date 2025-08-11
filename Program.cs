@@ -23,14 +23,6 @@ if (args.Length != 1 || !Constants.GetAvailableCommands().Contains(args[0]))
     return;
 }
 
-if (args[0] == Constants.AvailableCommands.Read)
-{
-    var worker = new ReadWorker();
-    await worker.Work();
-    return;
-}
+var worker = Helpers.GetWorker(args[0], vulkanVersionProvider);
 
-if (args[0] == Constants.AvailableCommands.CreateOrUpdate)
-{
-    var worker = new CreateOrUpdateWorker(vulkanVersionProvider);
-}
+await worker.Work();

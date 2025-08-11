@@ -12,17 +12,13 @@ namespace NvidiaICDVulkanGenerator
         {
             return $"Could not parse {path}";
         }
-        public static string? ReadVulkanVersion()
+        public static IWorker GetWorker(string param, IVulkanVersionProvider vulkanVersionProvider)
         {
-            using var process = new Process();
-            process.StartInfo.FileName = "/usr/bin/vulkaninfo";
-            process.StartInfo.RedirectStandardOutput = true;
-            process.StartInfo.UseShellExecute = false;
-            process.Start();
-            var data = process.StandardOutput.ReadToEnd();
-            process.Kill();
-
-            return data.Split("\n").FirstOrDefault(x => x.Contains("vk_layer_nv", StringComparison.InvariantCultureIgnoreCase))?.Split("Vulkan version")?[1].Trim().Split(",")[0];
+            if (param == Constants.AvailableCommands.Read)
+            {
+                return new ReadWorker();
+            }
+            return new CreateOrUpdateWorker(vulkanVersionProvider);
         }
     }
 }
