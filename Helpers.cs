@@ -6,21 +6,14 @@ namespace NvidiaICDVulkanGenerator
         {
             return $"Could not find {path}";
         }
-        public static IWorker GetWorker(string param, IVulkanVersionProvider vulkanVersionProvider)
+        public static IWorker GetWorker(string param, IVulkanVersionProvider vulkanVersionProvider, IFilePathProvider filePathProvider)
         {
-            var vulkanVersion = vulkanVersionProvider.GetVersion();
-
-            if (vulkanVersion == null)
-            {
-                throw new VulkanVersionNvidiaNotFoundException();
-            }
-
             if (param == Constants.AvailableCommands.Read)
             {
-                return new ReadWorker();
+                return new ReadWorker(filePathProvider);
             }
 
-            return new CreateOrUpdateWorker(vulkanVersionProvider);
+            return new CreateOrUpdateWorker(vulkanVersionProvider, filePathProvider);
         }
     }
 }

@@ -4,9 +4,16 @@ namespace NvidiaICDVulkanGenerator
 {
     public class ReadWorker : IWorker
     {
+        private IFilePathProvider _filePathProvider;
+
+        public ReadWorker(IFilePathProvider filePathProvider)
+        {
+            _filePathProvider = filePathProvider;
+        }
+
         public async Task Work()
         {
-            var filePath = Path.Combine(Constants.BaseJsonPath, Constants.Filename);
+            var filePath = _filePathProvider.GetFilePath();
 
             System.Console.WriteLine($"Executing read on {filePath}");
 
